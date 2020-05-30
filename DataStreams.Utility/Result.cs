@@ -6,6 +6,8 @@ namespace DataStreams.Utility
     [Serializable]
     public class Result
     {
+        public string Word { get; set; }
+
         public int Count { get; set; }
 
         public IList<string> Suggestions { get; set; }

@@ -74,6 +74,7 @@ namespace DataStreams.Core.Service.Words.Impl
             {
                 _misspelledWords.Add(word, new Result
                 {
+                    Word = word,
                     Count = 0,
                     Suggestions = suggestions
                 });
@@ -83,8 +84,12 @@ namespace DataStreams.Core.Service.Words.Impl
             _misspelledWords[word]++;
 
             //send the data through websocket
+            dynamic result = new
+            {
+                Result = _misspelledWords.Values
+            };
             _socket?.SendAsync(
-                JsonConvert.SerializeObject(_misspelledWords, Formatting.Indented), null);
+                JsonConvert.SerializeObject(result, Formatting.Indented), null);
         }
 
         private static bool IsCombinationKey(char key)
