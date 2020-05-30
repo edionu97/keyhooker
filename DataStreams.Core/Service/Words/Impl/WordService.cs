@@ -90,16 +90,9 @@ namespace DataStreams.Core.Service.Words.Impl
         private static bool IsCombinationKey(char key)
         {
             var values = Enum.GetValues(typeof(Keys));
-
-            foreach (var value in values)
-            {
-                if ((char) ((Keys) value) == key)
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            return values
+                .Cast<object>()
+                .All(value => (char) ((Keys) value) != key);
         }
 
         private static bool IsWordSeparator(char key)

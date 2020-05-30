@@ -19,7 +19,8 @@ namespace DataStreams.Hooker.Hooker.Impl
                 onAction = Console.WriteLine;
             }
 
-            Hook.GlobalEvents().KeyPress += (_, e) =>onAction(e.KeyChar);
+            Hook.GlobalEvents().KeyPress += (_, e) => onAction(e.KeyChar);
         }
+       
     }
 }

@@ -1,10 +1,8 @@
-﻿using System.Configuration;
-using System.Globalization;
-using DataStreams.Core.Resources.Impl;
-using DataStreams.Core.Service.Misspeling.Impl;
-using DataStreams.Core.Service.Words.Impl;
-using DataStreams.Hooker.Hooker.Impl;
-using WebSocketSharp;
+﻿using System;
+using Autofac;
+using DataStreams.Core.Service.Words;
+using DataStreams.Hooker.DI;
+using DataStreams.Hooker.Hooker;
 
 namespace DataStreams.Hooker
 {
@@ -12,14 +10,12 @@ namespace DataStreams.Hooker
     {
         public static void Main(string[] args)
         {
-            var ws = new WebSocket(ConfigurationManager.AppSettings["serverAddress"]);
-            ws.Connect();
+            var container = Bootstrapper.Bootstrap();
 
-            var manager = new ResourceManager();
-            var service = new MisspelingService(manager, ConfigurationManager.AppSettings["language"]);
-            var wordService = new WordService(service, ws);
-
-            new KeyboardHooker().Start(wordService.ProcessKey);
+            Console.WriteLine("Keyboard monitoring started...\nClose this window for stopping the process");
+            container
+                .Resolve<IHooker<char>>()
+                .Start(container.Resolve<IWordService>().ProcessKey);
         }
     }
 }
