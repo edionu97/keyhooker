@@ -55,6 +55,7 @@
     <Compile Include="Resources\Impl\ResourceManager.cs" />
     <Compile Include="Resources\IResourceManager.cs" />
     <Compile Include="Service\Words\Impl\WordService.cs" />
+    <Compile Include="Service\Words\Impl\WordService.Helpers.cs" />
     <Compile Include="Service\Words\IWordService.cs" />
     <Compile Include="Service\Misspeling\IMisspellingService.cs" />
     <Compile Include="Service\Misspeling\Impl\MisspelingService.cs" />

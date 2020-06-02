@@ -11,20 +11,21 @@ using WebSocketSharp;
 
 namespace DataStreams.Core.Service.Words.Impl
 {
-    public class WordService : IWordService
+    public partial class WordService : IWordService
     {
         private readonly object _lockObject = new object();
+        private readonly StringBuilder _streamWindow = new StringBuilder();
         private readonly IDictionary<string, Result> _misspelledWords = new ConcurrentDictionary<string, Result>();
 
+        private readonly int _maxWords;
         private readonly WebSocket _socket;
-        private readonly StringBuilder _streamWindow;
         private readonly IMisspellingService _misspellingService;
 
-        public WordService(IMisspellingService misspellingService, WebSocket webSocket)
+        public WordService(IMisspellingService misspellingService, WebSocket webSocket, int maxWords = 2)
         {
             _socket = webSocket;
+            _maxWords = maxWords;
             _misspellingService = misspellingService;
-            _streamWindow = new StringBuilder();
         }
 
         public void ProcessKey(char key)
@@ -78,6 +79,8 @@ namespace DataStreams.Core.Service.Words.Impl
                     Count = 0,
                     Suggestions = suggestions
                 });
+
+                //Reduce(_misspelledWords);
             }
 
             //increment the number of apparitions in dictionary
@@ -90,19 +93,6 @@ namespace DataStreams.Core.Service.Words.Impl
             };
             _socket?.SendAsync(
                 JsonConvert.SerializeObject(result, Formatting.Indented), null);
-        }
-
-        private static bool IsCombinationKey(char key)
-        {
-            var values = Enum.GetValues(typeof(Keys));
-            return values
-                .Cast<object>()
-                .All(value => (char) ((Keys) value) != key);
-        }
-
-        private static bool IsWordSeparator(char key)
-        {
-            return "`~!@#$%^&*()-+=][{}';:/?.>,<\\|\"\n".Contains(key + "") || char.IsWhiteSpace(key);
         }
     }
 }
